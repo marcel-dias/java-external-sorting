@@ -1,6 +1,6 @@
 package com.marceldias;
 
-public class ExternalSorting {
+public class ExternalSortingApplication {
 
     public static void main(String... args) {
         System.out.println(" Running External Sorting!");
