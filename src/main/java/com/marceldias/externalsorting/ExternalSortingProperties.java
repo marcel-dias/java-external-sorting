@@ -9,20 +9,31 @@ import java.nio.file.Files;
  * The properties are used to configure the Application
  * Default values:
  *
- * #FILENAME = input.txt
- * #OUTPUT = output.txt
- * #TEMP_FILES_DIR = /tmp/externalsorting
- * #MAX_TEMP_FILE_SIZE = 100 Mb
- *
  * You can modify the default value passing java properties like:
  * -Dfilename=/tmp/otherfile.txt
  */
 public enum ExternalSortingProperties {
 
+    /**
+     * filename java property
+     * default value = input.txt
+     */
     FILENAME("filename", "input.txt"),
+    /**
+     * output java property
+     * default value = output.txt
+     */
     OUTPUT("output", "output.txt"),
+    /**
+     * tempFilesDir java property
+     * default value = <code>Files.createTempDirectory("externalsorting")</code>
+     */
     TEMP_FILES_DIR("tempFilesDir", getTmp() ),
-    //100 Mb
+
+    /**
+     * maxTempFilesSize java property
+     * default value = 100Mb
+     */
     MAX_TEMP_FILE_SIZE("maxTempFilesSize", "" + (1024 * 1024 * 100));
 
     private String label;
@@ -45,7 +56,7 @@ public enum ExternalSortingProperties {
 
     /**
      * Get the property value from the System properties
-     * @return system property value or default value
+     * @return {@code System.getProperty(label)} if it is not null or the {@code defaultValue}
      */
     public String value() {
         return System.getProperty(label, defaultValue);
