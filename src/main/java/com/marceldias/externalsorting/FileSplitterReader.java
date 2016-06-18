@@ -8,28 +8,30 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.Callable;
 
-public class FileSplitterReader implements Runnable {
-    private FileSplitter fileSplitter;
+public class FileSplitterReader implements Callable<Boolean> {
+    private FileHandler fileHandler;
+    private String filename;
 
-    public FileSplitterReader(FileSplitter fileSplitter) {
-        this.fileSplitter = fileSplitter;
+    public FileSplitterReader(FileHandler fileHandler, String filename) {
+        this.fileHandler = fileHandler;
+        this.filename = filename;
     }
 
     @Override
-    public void run() {
-        String filename = ExternalSortingProperties.FILENAME.value();
+    public Boolean call() {
         Path path = Paths.get(filename);
         try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             String line;
             while ((line = br.readLine()) != null ) {
-                fileSplitter.getLinesQueue().put(line);
+                fileHandler.addLineToQueue(line);
             }
         } catch (NoSuchFileException e) {
             throw new ExternalSortingException("File not Found!", e);
         } catch (Exception e) {
             throw new ExternalSortingException("Unexpected error occured!", e);
         }
-        fileSplitter.setIsReaderDone(Boolean.TRUE);
+        return Boolean.TRUE;
     }
 }
