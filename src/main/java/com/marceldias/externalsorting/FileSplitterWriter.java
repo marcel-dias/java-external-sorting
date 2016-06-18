@@ -5,12 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-public class FileWriter implements Runnable {
+public class FileSplitterWriter implements Runnable {
     private FileSplitter fileSplitter;
     private String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
     private final Boolean append = Boolean.TRUE;
 
-    public FileWriter(FileSplitter fileSplitter) {
+    public FileSplitterWriter(FileSplitter fileSplitter) {
         this.fileSplitter = fileSplitter;
     }
 
@@ -48,11 +48,11 @@ public class FileWriter implements Runnable {
         String filename = (prefix + start).toLowerCase();
         File file = Paths.get(tempFilesDir, filename + ".txt").toFile();
 
-        Long maxTempFileSize = Long.valueOf(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.value());
-        //todo improve this validation to handle concurrency
-        if (file.length() >= maxTempFileSize) {
-            file = getFile(""+start, line.substring(1));
-        }
+//        Long maxTempFileSize = Long.valueOf(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.value());
+//        //todo improve this validation to handle concurrency
+//        if (file.length() >= maxTempFileSize) {
+//            file = getFile(""+start, line.substring(1));
+//        }
 
         fileSplitter.addTempFile(filename, file);
         return file;

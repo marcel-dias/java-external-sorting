@@ -9,10 +9,10 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class FileReader implements Runnable {
+public class FileSplitterReader implements Runnable {
     private FileSplitter fileSplitter;
 
-    public FileReader(FileSplitter fileSplitter) {
+    public FileSplitterReader(FileSplitter fileSplitter) {
         this.fileSplitter = fileSplitter;
     }
 

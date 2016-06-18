@@ -11,17 +11,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class FileReaderTest {
+public class FileSplitterReaderTest {
 
-    private FileReader fileReader;
+    private FileSplitterReader fileSplitterReader;
     private FileSplitter fileSplitter;
-    private FileWriter fileWriter;
+    private FileSplitterWriter fileSplitterWriter;
 
     @Before
     public void setUp() {
         fileSplitter = new FileSplitter();
-        fileReader = new FileReader(fileSplitter);
-        fileWriter = new FileWriter(fileSplitter);
+        fileSplitterReader = new FileSplitterReader(fileSplitter);
+        fileSplitterWriter = new FileSplitterWriter(fileSplitter);
     }
 
     @After
@@ -37,7 +37,7 @@ public class FileReaderTest {
         writeFile();
         String filename = ExternalSortingProperties.TEMP_FILES_DIR.value() + "/a.txt";
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
-        fileReader.run();
+        fileSplitterReader.run();
 
         Assert.assertThat(fileSplitter.getLinesQueue().size(), Is.is(3));
         Assert.assertThat(fileSplitter.isReaderDone(), Is.is(Boolean.TRUE));
@@ -47,7 +47,7 @@ public class FileReaderTest {
     public void testFileNotFound() {
         String filename = ExternalSortingProperties.TEMP_FILES_DIR.value() + "/fileNotFound.txt";
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
-        fileReader.run();
+        fileSplitterReader.run();
     }
 
     private void writeFile() {
@@ -55,6 +55,6 @@ public class FileReaderTest {
                 "abc defghi jklmnopr stuvxyz abcdefghijklmnoprstuvxyz \n" +
                 "abc zyxut defghijklmnoprstuvxyz abcdefghijklmnoprstuvxyz";
 
-        fileWriter.proccessLine(fileContent);
+        fileSplitterWriter.proccessLine(fileContent);
     }
 }

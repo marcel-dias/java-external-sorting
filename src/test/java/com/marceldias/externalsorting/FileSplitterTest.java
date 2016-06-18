@@ -40,9 +40,9 @@ public class FileSplitterTest {
         String filename = tempFilesDir + "/" + testFilename;
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
         System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "2048");
-        FileReader reader = fileSplitter.getFileReader();
+        FileSplitterReader reader = fileSplitter.getFileSplitterReader();
         reader.run();
-        FileWriter writer = fileSplitter.getFileWriter();
+        FileSplitterWriter writer = fileSplitter.getFileSplitterWriter();
         writer.run();
 
         Map<String, File> tempFiles = fileSplitter.getTempFiles();
@@ -60,9 +60,9 @@ public class FileSplitterTest {
         String filename = tempFilesDir + "/" + testFilename;
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
         System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "50");
-        FileReader reader = fileSplitter.getFileReader();
+        FileSplitterReader reader = fileSplitter.getFileSplitterReader();
         reader.run();
-        FileWriter writer = fileSplitter.getFileWriter();
+        FileSplitterWriter writer = fileSplitter.getFileSplitterWriter();
         writer.run();
 
         Map<String, File> tempFiles = fileSplitter.getTempFiles();

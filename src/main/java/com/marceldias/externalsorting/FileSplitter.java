@@ -18,12 +18,12 @@ public class FileSplitter {
     public Map<String, File> split() {
         ExecutorService readerPool = Executors.newFixedThreadPool(1);
         List<Future> futures = new ArrayList();
-        futures.add(readerPool.submit(getFileReader()));
+        futures.add(readerPool.submit(getFileSplitterReader()));
         // called
         // create a pool of consumer threads to parse the lines read
         ExecutorService writerPool = Executors.newFixedThreadPool(NR_WRITER_THREADS);
         for (int i = 0; i < NR_WRITER_THREADS; i++) {
-            futures.add(writerPool.submit(getFileWriter()));
+            futures.add(writerPool.submit(getFileSplitterWriter()));
         }
         readerPool.shutdown();
         writerPool.shutdown();
@@ -43,12 +43,12 @@ public class FileSplitter {
         return tempFiles;
     }
 
-    protected FileReader getFileReader() {
-        return new FileReader(this);
+    protected FileSplitterReader getFileSplitterReader() {
+        return new FileSplitterReader(this);
     }
 
-    protected FileWriter getFileWriter() {
-        return new FileWriter(this);
+    protected FileSplitterWriter getFileSplitterWriter() {
+        return new FileSplitterWriter(this);
     }
 
     public BlockingQueue<String> getLinesQueue() {

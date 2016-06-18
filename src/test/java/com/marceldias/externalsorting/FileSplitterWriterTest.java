@@ -12,15 +12,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class FileWriterTest {
+public class FileSplitterWriterTest {
 
-    private FileWriter fileWriter;
+    private FileSplitterWriter fileSplitterWriter;
     private FileSplitter fileSplitter;
 
     @Before
     public void setUp() {
         fileSplitter = new FileSplitter();
-        fileWriter = new FileWriter( fileSplitter);
+        fileSplitterWriter = new FileSplitterWriter( fileSplitter);
     }
 
     @After
@@ -34,7 +34,7 @@ public class FileWriterTest {
     @Test
     public void testGetFile() {
         String line = "abcdefg";
-        File file = fileWriter.getFile(line);
+        File file = fileSplitterWriter.getFile(line);
         Assert.assertThat(file.getName(), IsEqual.equalTo("a.txt"));
     }
 
@@ -42,9 +42,9 @@ public class FileWriterTest {
     public void testGetFileWithPrefixAndHugeSize() {
         System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "50");
         String line = "abcdefghijklmnoprstuvxyz abcdefghijklmnoprstuvxyz";
-        fileWriter.proccessLine(line);
+        fileSplitterWriter.proccessLine(line);
 
-        File file = fileWriter.getFile(line);
+        File file = fileSplitterWriter.getFile(line);
         Assert.assertThat(file.getName(), IsEqual.equalTo("ab.txt"));
     }
 
@@ -60,7 +60,7 @@ public class FileWriterTest {
             e.printStackTrace();
         }
 
-        fileWriter.run();
+        fileSplitterWriter.run();
 
         File aFile = new File(ExternalSortingProperties.TEMP_FILES_DIR.value(), "a.txt");
         File zFile = new File(ExternalSortingProperties.TEMP_FILES_DIR.value(), "z.txt");
