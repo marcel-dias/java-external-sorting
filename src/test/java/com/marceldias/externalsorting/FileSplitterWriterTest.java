@@ -5,6 +5,7 @@ import org.hamcrest.core.IsEqual;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -39,6 +40,7 @@ public class FileSplitterWriterTest {
     }
 
     @Test
+    @Ignore("ignore until split file by size again")
     public void testGetFileWithPrefixAndHugeSize() {
         System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "50");
         String line = "abcdefghijklmnoprstuvxyz abcdefghijklmnoprstuvxyz";
@@ -60,7 +62,7 @@ public class FileSplitterWriterTest {
             e.printStackTrace();
         }
 
-        fileSplitterWriter.run();
+        fileSplitterWriter.call();
 
         File aFile = new File(ExternalSortingProperties.TEMP_FILES_DIR.value(), "a.txt");
         File zFile = new File(ExternalSortingProperties.TEMP_FILES_DIR.value(), "z.txt");
