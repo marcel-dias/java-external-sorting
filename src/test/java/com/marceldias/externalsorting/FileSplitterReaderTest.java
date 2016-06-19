@@ -20,7 +20,6 @@ public class FileSplitterReaderTest {
     @Before
     public void setUp() {
         fileSplitter = new FileSplitter();
-        fileSplitterReader = new FileSplitterReader(fileSplitter);
         fileSplitterWriter = new FileSplitterWriter(fileSplitter);
     }
 
@@ -37,7 +36,8 @@ public class FileSplitterReaderTest {
         writeFile();
         String filename = ExternalSortingProperties.TEMP_FILES_DIR.value() + "/a.txt";
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
-        fileSplitterReader.run();
+        fileSplitterReader = new FileSplitterReader(fileSplitter, ExternalSortingProperties.FILENAME.value());
+        fileSplitter.setIsReaderDone(fileSplitterReader.call());
 
         Assert.assertThat(fileSplitter.getLinesQueue().size(), Is.is(3));
         Assert.assertThat(fileSplitter.isReaderDone(), Is.is(Boolean.TRUE));
@@ -47,7 +47,8 @@ public class FileSplitterReaderTest {
     public void testFileNotFound() {
         String filename = ExternalSortingProperties.TEMP_FILES_DIR.value() + "/fileNotFound.txt";
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
-        fileSplitterReader.run();
+        fileSplitterReader = new FileSplitterReader(fileSplitter, ExternalSortingProperties.FILENAME.value());
+        fileSplitterReader.call();
     }
 
     private void writeFile() {
