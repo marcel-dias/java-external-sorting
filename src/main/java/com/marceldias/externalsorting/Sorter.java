@@ -6,17 +6,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-public class FileSorter implements FileHandler {
+public class Sorter implements FileHandler, Callable<LinkedList<String>> {
 
     private Map<String, File> files;
     private LinkedList<String> queue = new LinkedList<>();
 
-    public FileSorter(Map<String, File> files) {
+    public Sorter(Map<String, File> files) {
         this.files = files;
     }
 
-    protected FileSorter() {}
+    public Sorter() {}
+
+    @Override
+    public LinkedList<String> call() throws Exception {
+        return null;
+    }
 
     public void sort() {
         List<String> orderedFiles = sortFilenames(files.keySet());
@@ -25,7 +31,8 @@ public class FileSorter implements FileHandler {
             //order file content
             queue = compare(queue);
             //append file content to final file
-            append();
+//            append();
+            FileWriter.wri(a);
         }
     }
 
@@ -33,7 +40,7 @@ public class FileSorter implements FileHandler {
         File file = Paths.get(ExternalSortingProperties.OUTPUT.value()).toFile();
         while (!queue.isEmpty()) {
             String line = queue.pollFirst();
-            FileWriter.appendLine(line, file);
+            FileWriter.writeLine(line, file);
         }
     }
 

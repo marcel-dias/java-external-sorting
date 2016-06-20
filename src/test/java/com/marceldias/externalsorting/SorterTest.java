@@ -16,13 +16,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class FileSorterTest {
+public class SorterTest {
 
-    private FileSorter fileSorter;
+    private Sorter sorter;
 
     @Before
     public void setUp() {
-        fileSorter = new FileSorter();
+        sorter = new Sorter();
     }
 
     @After
@@ -38,8 +38,8 @@ public class FileSorterTest {
         Map<String, File> files = writeFiles();
         String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
         System.setProperty(ExternalSortingProperties.OUTPUT.getLabel(), tempFilesDir + "/output.txt");
-        fileSorter = new FileSorter(files);
-        fileSorter.sort();
+        sorter = new Sorter(files);
+        sorter.sort();
 
         //read file
         //check content
@@ -50,7 +50,7 @@ public class FileSorterTest {
     public void testIsLeftPrecedent() {
         String left = "left";
         String right = "right";
-        Boolean isLeftPrecedent = fileSorter.isLeftPrecedent(left, right);
+        Boolean isLeftPrecedent = sorter.isLeftPrecedent(left, right);
 
         Assert.assertThat(isLeftPrecedent, Is.is(Boolean.TRUE));
     }
@@ -63,7 +63,7 @@ public class FileSorterTest {
         list.add("Abcd");
         list.add("zzzzz");
         list.add("abcd");
-        LinkedList<String> result = fileSorter.compare(list);
+        LinkedList<String> result = sorter.compare(list);
 
         Assert.assertThat(result, IsNull.notNullValue());
         Assert.assertThat(result.size(), Is.is(5));
@@ -76,7 +76,7 @@ public class FileSorterTest {
         left.add("left");
         LinkedList<String> right = new LinkedList<>();
         right.add("right");
-        LinkedList<String> result = fileSorter.merge(left, right);
+        LinkedList<String> result = sorter.merge(left, right);
 
         Assert.assertThat(result, IsNull.notNullValue());
         Assert.assertThat(result.size(), Is.is(2));
@@ -88,12 +88,12 @@ public class FileSorterTest {
         String left = "left";
         String right = "right";
 
-        fileSorter.addLineToQueue(left);
-        fileSorter.addLineToQueue(right);
+        sorter.addLineToQueue(left);
+        sorter.addLineToQueue(right);
 
-        Assert.assertThat(fileSorter.getQueue(), IsNull.notNullValue());
-        Assert.assertThat(fileSorter.getQueue().size(), Is.is(2));
-        Assert.assertThat(fileSorter.getQueue(), IsIterableContainingInOrder.contains("left", "right"));
+        Assert.assertThat(sorter.getQueue(), IsNull.notNullValue());
+        Assert.assertThat(sorter.getQueue().size(), Is.is(2));
+        Assert.assertThat(sorter.getQueue(), IsIterableContainingInOrder.contains("left", "right"));
     }
 
     private Map<String, File> writeFiles() {
@@ -101,9 +101,9 @@ public class FileSorterTest {
         File a = Paths.get(tempFilesDir, "test-a.txt").toFile();
         File b = Paths.get(tempFilesDir, "test-b.txt").toFile();
         File z = Paths.get(tempFilesDir, "test-z.txt").toFile();
-        FileWriter.appendLine("abcdefghijklmnoprstuvxy", a);
-        FileWriter.appendLine("bcdefghijklmnoprstuvxyz", b);
-        FileWriter.appendLine("zyxutabcdefghijklmnoprs", z);
+        FileWriter.writeLine("abcdefghijklmnoprstuvxy", a);
+        FileWriter.writeLine("bcdefghijklmnoprstuvxyz", b);
+        FileWriter.writeLine("zyxutabcdefghijklmnoprs", z);
         Map<String, File> files = new HashMap<>(3);
         files.put("test-a", a);
         files.put("test-b", b);
