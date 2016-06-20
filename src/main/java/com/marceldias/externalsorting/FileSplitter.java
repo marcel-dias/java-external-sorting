@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -33,23 +32,9 @@ public class FileSplitter implements FileHandler {
         readerPool.shutdown();
         writerPool.shutdown();
 
-        waitExecution(readerFuture, futures);
+        setIsReaderDone(FutureHelper.waitExecution(readerFuture));
+        FutureHelper.waitExecution(futures);
         return tempFiles;
-    }
-
-    private void waitExecution(Future<Boolean> readerFuture, List<Future> futures) {
-        try {
-            setIsReaderDone( readerFuture.get());
-            for (Future f : futures) {
-                if (!f.isDone()) {
-                    f.get();
-                }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
     }
 
     private FileSplitterReader getFileSplitterReader() {
