@@ -4,10 +4,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class FileSplitter {
+public class FileSplitter implements FileHandler {
 
     private BlockingQueue<String> linesQueue = new ArrayBlockingQueue<>(30);
     private Map<String, File> tempFiles = new ConcurrentHashMap<>();
@@ -17,37 +23,41 @@ public class FileSplitter {
 
     public Map<String, File> split() {
         ExecutorService readerPool = Executors.newFixedThreadPool(1);
-        List<Future> futures = new ArrayList();
-        futures.add(readerPool.submit(getFileSplitterReader()));
-        // called
-        // create a pool of consumer threads to parse the lines read
+        Future<Boolean> readerFuture = readerPool.submit(getFileSplitterReader());
+
         ExecutorService writerPool = Executors.newFixedThreadPool(NR_WRITER_THREADS);
+        List<Future> futures = new ArrayList();
         for (int i = 0; i < NR_WRITER_THREADS; i++) {
             futures.add(writerPool.submit(getFileSplitterWriter()));
         }
         readerPool.shutdown();
         writerPool.shutdown();
-        for (Future f : futures) {
-            try {
-                if (!f.isDone()) {
-                    f.get();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-//        while (!readerPool.isTerminated() && !writerPool.isTerminated()) {
-//        }
+
+        waitExecution(readerFuture, futures);
         return tempFiles;
     }
 
-    protected FileSplitterReader getFileSplitterReader() {
-        return new FileSplitterReader(this);
+    private void waitExecution(Future<Boolean> readerFuture, List<Future> futures) {
+        try {
+            setIsReaderDone( readerFuture.get());
+            for (Future f : futures) {
+                if (!f.isDone()) {
+                    f.get();
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
-    protected FileSplitterWriter getFileSplitterWriter() {
+    private FileSplitterReader getFileSplitterReader() {
+        String filename = ExternalSortingProperties.FILENAME.value();
+        return new FileSplitterReader(this, filename);
+    }
+
+    private FileSplitterWriter getFileSplitterWriter() {
         return new FileSplitterWriter(this);
     }
 
@@ -67,13 +77,18 @@ public class FileSplitter {
         count.incrementAndGet();
     }
 
+    public static AtomicLong getCount() {
+        return count;
+    }
+
     public void addTempFile(String filename, File file) {
         if (!tempFiles.containsKey(filename)) {
             tempFiles.put(filename, file);
         }
     }
 
-    protected Map<String, File> getTempFiles() {
-        return tempFiles;
+    @Override
+    public void addLineToQueue(String line) throws InterruptedException {
+        linesQueue.put(line);
     }
 }
