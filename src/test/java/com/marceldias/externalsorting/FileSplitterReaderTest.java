@@ -32,7 +32,7 @@ public class FileSplitterReaderTest {
     }
 
     @Test
-    public void testRun() {
+    public void testCall() {
         writeFile();
         String filename = ExternalSortingProperties.TEMP_FILES_DIR.value() + "/a.txt";
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);

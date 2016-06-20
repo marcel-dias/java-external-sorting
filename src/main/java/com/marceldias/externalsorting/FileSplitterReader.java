@@ -21,6 +21,10 @@ public class FileSplitterReader implements Callable<Boolean> {
 
     @Override
     public Boolean call() {
+        return execute();
+    }
+
+    public Boolean execute() {
         Path path = Paths.get(filename);
         try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             String line;
