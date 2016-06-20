@@ -2,14 +2,20 @@ package com.marceldias;
 
 import com.marceldias.externalsorting.FileSorter;
 import com.marceldias.externalsorting.FileSplitter;
+import com.marceldias.externalsorting.FileWriter;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class ExternalSortingApplication {
 
     public static void main(String... args) {
+        new ExternalSortingApplication().execute();
+    }
+
+    private void execute() {
         System.out.println(" Running External Sorting!");
         long startTime = System.currentTimeMillis();
         long startTotalTime = System.currentTimeMillis();
@@ -21,35 +27,45 @@ public class ExternalSortingApplication {
         long endTime = System.currentTimeMillis();
         long elapsedTimeInMillis = (endTime - startTime);
         System.out.println("Splitter elapsed time: " + elapsedTimeInMillis + " ms");
-        elapsedTimeInMillis = TimeUnit.SECONDS.convert(elapsedTimeInMillis, TimeUnit.MILLISECONDS);
-        System.out.println("Splitter elapsed time: " + elapsedTimeInMillis + " sec");
         System.out.println("Lines processed: " + fileSplitter.getCount().get());
 
         startTime = System.currentTimeMillis();
-        //synchronous
-        // maybe read, sort and merge
-        FileSorter sorter = new FileSorter(tempFiles);
-        sorter.sort();
+        // asynchronous
+        // read, sort in alphabetic order and override file
+        FileSorter sorter = new FileSorter();
+        List<String> orderedFiles = sorter.sort(tempFiles);
 
         endTime = System.currentTimeMillis();
         elapsedTimeInMillis = (endTime - startTime);
         System.out.println("Sorter elapsed time: " + elapsedTimeInMillis + " ms");
-        elapsedTimeInMillis = TimeUnit.SECONDS.convert(elapsedTimeInMillis, TimeUnit.MILLISECONDS);
-        System.out.println("Sorter elapsed time: " + elapsedTimeInMillis + " sec");
 
+        //synchronous
+        // maybe read, sort and merge
 //      sort in alphabetic order (filelist);
 //      for each file in filelist
 
-        // asynchronous
-        // read, sort in alphabetic order and override file
         // read and merge
+        startTime = System.currentTimeMillis();
+        List<File> files = getOrderedFileList(orderedFiles, tempFiles);
+        FileWriter.mergeFiles(files);
 
+        endTime = System.currentTimeMillis();
+        elapsedTimeInMillis = (endTime - startTime);
+        System.out.println("Merge Files elapsed time: " + elapsedTimeInMillis + " ms");
+
+        //######################################
         endTime = System.currentTimeMillis();
         elapsedTimeInMillis = (endTime - startTotalTime);
         System.out.println("Total elapsed time: " + elapsedTimeInMillis + " ms");
-        elapsedTimeInMillis = TimeUnit.SECONDS.convert(elapsedTimeInMillis, TimeUnit.MILLISECONDS);
-        System.out.println("Total elapsed time: " + elapsedTimeInMillis + " sec");
         System.exit(0);
         System.out.println(" External Sorting successfully executed!");
+    }
+
+    private List<File> getOrderedFileList(List<String> filenames, Map<String, File> tempFiles) {
+        List<File> orderedFiles = new LinkedList<>();
+        for (String filename : filenames) {
+            orderedFiles.add(tempFiles.get(filename));
+        }
+        return orderedFiles;
     }
 }
