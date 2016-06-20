@@ -1,47 +1,39 @@
 package com.marceldias.externalsorting;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-public class Sorter implements FileHandler, Callable<LinkedList<String>> {
+public class Sorter implements FileHandler, Callable<Boolean> {
 
-    private Map<String, File> files;
+    private File file;
     private LinkedList<String> queue = new LinkedList<>();
 
-    public Sorter(Map<String, File> files) {
-        this.files = files;
+    public Sorter(File file) {
+        this.file = file;
     }
 
-    public Sorter() {}
+    public Sorter() {
+    }
 
     @Override
-    public LinkedList<String> call() throws Exception {
-        return null;
+    public Boolean call() throws Exception {
+        sort();
+        return Boolean.TRUE;
     }
 
     public void sort() {
-        List<String> orderedFiles = sortFilenames(files.keySet());
-        for (String filename : orderedFiles) {
-            new FileSplitterReader(this, files.get(filename).getAbsolutePath()).call();
-            //order file content
-            queue = compare(queue);
-            //append file content to final file
-//            append();
-            FileWriter.wri(a);
-        }
+        new FileSplitterReader(this, file.getAbsolutePath()).execute();
+        //order file content
+        queue = compare(queue);
+        //append file content to final file
+        append();
     }
 
     private void append() {
-        File file = Paths.get(ExternalSortingProperties.OUTPUT.value()).toFile();
-        while (!queue.isEmpty()) {
-            String line = queue.pollFirst();
-            FileWriter.writeLine(line, file);
-        }
+        FileWriter.writeLines(queue, file, false);
     }
 
     protected LinkedList<String> compare(LinkedList<String> list) {
@@ -107,7 +99,7 @@ public class Sorter implements FileHandler, Callable<LinkedList<String>> {
         char[] rightArray = right.toLowerCase().toCharArray();
 
         boolean isLeftPrecedent = true;
-        while ( leftIndex < leftArray.length) {
+        while (leftIndex < leftArray.length) {
             if (leftArray[leftIndex] < rightArray[rightIndex]) {
                 break;
             } else if (leftArray[leftIndex] > rightArray[rightIndex]) {
@@ -120,7 +112,7 @@ public class Sorter implements FileHandler, Callable<LinkedList<String>> {
         return isLeftPrecedent;
     }
 
-    private List<String> sortFilenames(Set<String> filenames) {
+    public List<String> sortFilenames(Set<String> filenames) {
         LinkedList<String> result = compare(new LinkedList<>(filenames));
         return result;
     }

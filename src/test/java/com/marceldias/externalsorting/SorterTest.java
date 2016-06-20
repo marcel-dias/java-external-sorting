@@ -12,9 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 public class SorterTest {
 
@@ -35,10 +33,10 @@ public class SorterTest {
 
     @Test
     public void testSort() {
-        Map<String, File> files = writeFiles();
+        File file = writeFile();
         String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
         System.setProperty(ExternalSortingProperties.OUTPUT.getLabel(), tempFilesDir + "/output.txt");
-        sorter = new Sorter(files);
+        sorter = new Sorter(file);
         sorter.sort();
 
         //read file
@@ -96,18 +94,12 @@ public class SorterTest {
         Assert.assertThat(sorter.getQueue(), IsIterableContainingInOrder.contains("left", "right"));
     }
 
-    private Map<String, File> writeFiles() {
+    private File writeFile() {
         String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
         File a = Paths.get(tempFilesDir, "test-a.txt").toFile();
-        File b = Paths.get(tempFilesDir, "test-b.txt").toFile();
-        File z = Paths.get(tempFilesDir, "test-z.txt").toFile();
-        FileWriter.writeLine("abcdefghijklmnoprstuvxy", a);
-        FileWriter.writeLine("bcdefghijklmnoprstuvxyz", b);
-        FileWriter.writeLine("zyxutabcdefghijklmnoprs", z);
-        Map<String, File> files = new HashMap<>(3);
-        files.put("test-a", a);
-        files.put("test-b", b);
-        files.put("test-z", z);
-        return files;
+        FileWriter.appendLine("zyxutabcdefghijklmnoprs", a);
+        FileWriter.appendLine("bcdefghijklmnoprstuvxyz", a);
+        FileWriter.appendLine("abcdefghijklmnoprstuvxy", a);
+        return a;
     }
 }
