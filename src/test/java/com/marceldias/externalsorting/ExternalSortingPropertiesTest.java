@@ -1,10 +1,19 @@
 package com.marceldias.externalsorting;
 
 import org.hamcrest.core.Is;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ExternalSortingPropertiesTest {
+
+    @Before
+    @After
+    public void tearDown() {
+        System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(),
+                ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getDefaultValue());
+    }
 
     @Test
     public void testGetDefaultValue() {

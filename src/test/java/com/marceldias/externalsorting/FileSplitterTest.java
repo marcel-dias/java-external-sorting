@@ -25,6 +25,8 @@ public class FileSplitterTest {
     @Before
     public void setUp() {
         fileSplitter = new FileSplitter();
+        System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(),
+                ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getDefaultValue());
     }
 
     @After
@@ -33,6 +35,8 @@ public class FileSplitterTest {
         for (String file : testFiles) {
             Files.deleteIfExists(Paths.get(ExternalSortingProperties.TEMP_FILES_DIR.value(), file));
         }
+        System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(),
+                ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getDefaultValue());
     }
 
     @Test
@@ -40,7 +44,6 @@ public class FileSplitterTest {
         writeFile();
         String filename = tempFilesDir + "/" + testFilename;
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
-        System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "2048");
 
         Map<String, File> tempFiles = fileSplitter.split();
 

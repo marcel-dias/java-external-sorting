@@ -30,6 +30,8 @@ public class FileSplitterWriterTest {
         for (String file : testFiles) {
             Files.deleteIfExists(Paths.get(ExternalSortingProperties.TEMP_FILES_DIR.value(), file));
         }
+        System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(),
+                ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getDefaultValue());
     }
 
     @Test
