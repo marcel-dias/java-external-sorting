@@ -55,7 +55,6 @@ public class FileSplitterTest {
     }
 
     @Test
-    @Ignore("ignore until split file by size again")
     public void testWithMoreTempFiles() {
         writeFile();
         String filename = tempFilesDir + "/" + testFilename;
@@ -83,11 +82,10 @@ public class FileSplitterTest {
         Assert.assertThat(fileSplitter.getLinesQueue().size(), Is.is(0));
         Assert.assertThat(fileSplitter.isReaderDone(), Is.is(Boolean.TRUE));
         Assert.assertThat(tempFiles, IsNull.notNullValue());
-        Assert.assertThat(tempFiles.size(), Is.is(1));
+        Assert.assertThat(tempFiles.size(), Is.is(3));
         Assert.assertThat(tempFiles.keySet(), CoreMatchers.hasItems("a"));
-        // keep this commented until improve the file size splitter
-//        Assert.assertThat(tempFiles.size(), Is.is(3));
-//        Assert.assertThat(tempFiles.keySet(), CoreMatchers.hasItems("a", "ab", "ac"));
+        Assert.assertThat(tempFiles.size(), Is.is(3));
+        Assert.assertThat(tempFiles.keySet(), CoreMatchers.hasItems("a", "ab", "ac"));
     }
 
     private void writeFile() {

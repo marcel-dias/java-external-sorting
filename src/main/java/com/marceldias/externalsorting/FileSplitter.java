@@ -18,7 +18,7 @@ public class FileSplitter implements FileHandler {
     private Map<String, File> tempFiles = new ConcurrentHashMap<>();
     private boolean isReaderDone = false;
     private static AtomicLong count = new AtomicLong(0);
-    private static Integer NR_WRITER_THREADS = 1;
+    private static Integer NR_WRITER_THREADS = Integer.valueOf(ExternalSortingProperties.NR_WRITER_THREADS.value());
 
     public Map<String, File> split() {
         ExecutorService readerPool = Executors.newFixedThreadPool(1);
@@ -70,6 +70,10 @@ public class FileSplitter implements FileHandler {
         if (!tempFiles.containsKey(filename)) {
             tempFiles.put(filename, file);
         }
+    }
+
+    public Map<String, File> getTempFiles() {
+        return tempFiles;
     }
 
     @Override
