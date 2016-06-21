@@ -94,15 +94,12 @@ public class Sorter implements FileHandler, Callable<Boolean> {
     protected boolean isLeftPrecedent(String left, String right) {
         int leftIndex = 0;
         int rightIndex = 0;
-        // todo compare in substrings if string is huge
-        char[] leftArray = left.toLowerCase().toCharArray();
-        char[] rightArray = right.toLowerCase().toCharArray();
 
         boolean isLeftPrecedent = true;
-        while (leftIndex < leftArray.length) {
-            if (leftArray[leftIndex] < rightArray[rightIndex]) {
+        while (leftIndex < left.length() && rightIndex < right.length()) {
+            if (left.charAt(leftIndex) < right.charAt(rightIndex)) {
                 break;
-            } else if (leftArray[leftIndex] > rightArray[rightIndex]) {
+            } else if (left.charAt(leftIndex) > right.charAt(rightIndex)) {
                 isLeftPrecedent = false;
                 break;
             }
