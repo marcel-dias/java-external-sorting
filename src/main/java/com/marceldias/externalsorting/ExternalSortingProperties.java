@@ -35,9 +35,15 @@ public enum ExternalSortingProperties {
     /**
      * Represents the maximum size of a temporary file
      * maxTempFilesSize java property
-     * default value = 100Mb
+     * default value = 10Mb
      */
-    MAX_TEMP_FILE_SIZE("maxTempFilesSize", "" + (1024 * 1024 * 100));
+    MAX_TEMP_FILE_SIZE("maxTempFilesSize", "" + (1024 * 1024 * 10)),
+    /**
+     * Represents the number of threads used to write temporary files and to execute sort routine
+     * nrWriterThreads java property
+     * default value = 1
+     */
+    NR_WRITER_THREADS("nrWriterThreads", "1");
 
     private String label;
     private String defaultValue;

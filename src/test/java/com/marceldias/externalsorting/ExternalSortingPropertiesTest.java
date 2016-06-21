@@ -17,7 +17,7 @@ public class ExternalSortingPropertiesTest {
 
     @Test
     public void testGetDefaultValue() {
-        String maxSize = "" + (1024 * 1024 * 100);
+        String maxSize = "" + (1024 * 1024 * 10);
         Assert.assertThat(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.value(), Is.is(maxSize));
     }
 
