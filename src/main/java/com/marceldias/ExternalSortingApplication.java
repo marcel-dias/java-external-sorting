@@ -28,6 +28,7 @@ public class ExternalSortingApplication {
         long elapsedTimeInMillis = (endTime - startTime);
         System.out.println("Splitter elapsed time: " + elapsedTimeInMillis + " ms");
         System.out.println("Lines processed: " + fileSplitter.getCount().get());
+        System.out.println("Number of temp files: " + tempFiles.size());
 
         startTime = System.currentTimeMillis();
         // asynchronous
