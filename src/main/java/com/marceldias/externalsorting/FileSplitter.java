@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,6 +17,7 @@ public class FileSplitter implements FileHandler {
 
     private BlockingQueue<String> linesQueue = new ArrayBlockingQueue<>(30);
     private Map<String, File> tempFiles = new ConcurrentHashMap<>();
+    private final Set<String> exhaustedTempFiles = ConcurrentHashMap.newKeySet();
     private boolean isReaderDone = false;
     private static AtomicLong count = new AtomicLong(0);
     private static Integer NR_WRITER_THREADS = Integer.valueOf(ExternalSortingProperties.NR_WRITER_THREADS.value());
@@ -79,5 +81,13 @@ public class FileSplitter implements FileHandler {
     @Override
     public void addLineToQueue(String line) throws InterruptedException {
         linesQueue.put(line);
+    }
+
+    public void addExhaustedFile(String filename) {
+        exhaustedTempFiles.add(filename);
+    }
+
+    public boolean isFileExhausted(String filename) {
+        return exhaustedTempFiles.contains(filename);
     }
 }

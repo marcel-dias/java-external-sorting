@@ -51,7 +51,8 @@ public class FileSplitterWriter extends FileWriter implements Callable<Boolean> 
         } else {
             Long maxTempFileSize = Long.valueOf(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.value());
             //todo improve this validation
-            if (file.length() >= maxTempFileSize) {
+            if (fileSplitter.isFileExhausted(filename) || file.length() >= maxTempFileSize) {
+                fileSplitter.addExhaustedFile(filename);
                 file = getFile("" + start, line.substring(1));
             }
         }
