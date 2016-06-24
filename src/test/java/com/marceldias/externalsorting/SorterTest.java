@@ -40,7 +40,7 @@ public class SorterTest {
         list.add("zzzzz");
         list.add("abcd");
         sorter = new Sorter(list);
-        LinkedList<String> result = sorter.call();
+        LinkedList<String> result = sorter.sort();
 
         Assert.assertThat(result, IsNull.notNullValue());
         Assert.assertThat(result.size(), Is.is(5));

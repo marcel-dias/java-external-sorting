@@ -1,7 +1,6 @@
 package com.marceldias.externalsorting;
 
 import java.util.LinkedList;
-import java.util.concurrent.Callable;
 
 /**
  * Sorter
@@ -9,7 +8,7 @@ import java.util.concurrent.Callable;
  * Sort an unsorted list using merge sort algorithm
  *
  */
-public class Sorter implements Callable<LinkedList<String>> {
+public class Sorter {
 
     private LinkedList<String> queue;
 
@@ -18,17 +17,6 @@ public class Sorter implements Callable<LinkedList<String>> {
     }
 
     protected Sorter() {
-    }
-
-    /**
-     * This method is used by the executors to run multiple sorters at the same time.
-     *
-     * @return a ordered list
-     * @throws Exception
-     */
-    @Override
-    public LinkedList<String> call() throws Exception {
-        return sort();
     }
 
     /**
