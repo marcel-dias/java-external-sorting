@@ -1,6 +1,7 @@
 package com.marceldias.externalsorting;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,18 +21,20 @@ public class FileSplitter implements FileHandler {
     private final Set<String> exhaustedTempFiles = ConcurrentHashMap.newKeySet();
     private boolean isReaderDone = false;
     private static AtomicLong count = new AtomicLong(0);
+    private String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
     private static Integer NR_WRITER_THREADS = Integer.valueOf(ExternalSortingProperties.NR_WRITER_THREADS.value());
 
     public Map<String, File> split() {
+        String filename = ExternalSortingProperties.FILENAME.value();
         ExecutorService readerPool = Executors.newFixedThreadPool(1);
-        Future<Boolean> readerFuture = readerPool.submit(getFileSplitterReader());
+        Future<Boolean> readerFuture = readerPool.submit(getFileSplitterReader(filename));
+        readerPool.shutdown();
 
         ExecutorService writerPool = Executors.newFixedThreadPool(NR_WRITER_THREADS);
         List<Future> futures = new ArrayList();
         for (int i = 0; i < NR_WRITER_THREADS; i++) {
             futures.add(writerPool.submit(getFileSplitterWriter()));
         }
-        readerPool.shutdown();
         writerPool.shutdown();
 
         setIsReaderDone(FutureHelper.waitExecution(readerFuture));
@@ -39,8 +42,31 @@ public class FileSplitter implements FileHandler {
         return tempFiles;
     }
 
-    private FileSplitterReader getFileSplitterReader() {
-        String filename = ExternalSortingProperties.FILENAME.value();
+    protected File getFile( String line) {
+        return getFile("", line);
+    }
+
+    protected File getFile(String prefix, String line) {
+        char start = line.charAt(0);
+        String filename = (prefix + start).toLowerCase();
+
+        File file = getTempFiles().get(filename);
+        if (file == null) {
+            file = Paths.get(tempFilesDir, filename + ".txt").toFile();
+            file.deleteOnExit();
+            addTempFile(filename, file);
+        } else {
+            Long maxTempFileSize = Long.valueOf(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.value());
+            if (isFileExhausted(filename) || file.length() >= maxTempFileSize) {
+                addExhaustedFile(filename);
+                file = getFile("" + start, line.substring(1));
+            }
+        }
+
+        return file;
+    }
+
+    private FileSplitterReader getFileSplitterReader(String filename) {
         return new FileSplitterReader(this, filename);
     }
 

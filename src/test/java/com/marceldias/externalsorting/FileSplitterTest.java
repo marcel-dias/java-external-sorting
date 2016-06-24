@@ -2,6 +2,7 @@ package com.marceldias.externalsorting;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.core.Is;
+import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
 import org.junit.After;
 import org.junit.Assert;
@@ -40,7 +41,7 @@ public class FileSplitterTest {
     }
 
     @Test
-    public void testGettingTempFiles() {
+    public void testSplit() {
         writeFile();
         String filename = tempFilesDir + "/" + testFilename;
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
@@ -55,7 +56,7 @@ public class FileSplitterTest {
     }
 
     @Test
-    public void testWithMoreTempFiles() {
+    public void testSplitWithMoreTempFiles() {
         writeFile();
         String filename = tempFilesDir + "/" + testFilename;
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
@@ -71,21 +72,24 @@ public class FileSplitterTest {
     }
 
     @Test
-    public void testSplitReal() {
+    public void testGetFile() {
+        String line = "abcdefg";
+        File file = fileSplitter.getFile(line);
+        Assert.assertThat(file.getName(), IsEqual.equalTo("a.txt"));
+    }
+
+    @Test
+    public void testGetFileWithPrefixAndHugeSize() {
         writeFile();
         String filename = tempFilesDir + "/" + testFilename;
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
         System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "50");
 
-        Map<String, File> tempFiles = fileSplitter.split();
+        String line = "adcdefghijklmnoprstuvxyz abcdefghijklmnoprstuvxyz";
+        fileSplitter.split();
+        File file = fileSplitter.getFile(line);
 
-        Assert.assertThat(fileSplitter.getLinesQueue().size(), Is.is(0));
-        Assert.assertThat(fileSplitter.isReaderDone(), Is.is(Boolean.TRUE));
-        Assert.assertThat(tempFiles, IsNull.notNullValue());
-        Assert.assertThat(tempFiles.size(), Is.is(3));
-        Assert.assertThat(tempFiles.keySet(), CoreMatchers.hasItems("a"));
-        Assert.assertThat(tempFiles.size(), Is.is(3));
-        Assert.assertThat(tempFiles.keySet(), CoreMatchers.hasItems("a", "ab", "ac"));
+        Assert.assertThat(file.getName(), IsEqual.equalTo("ad.txt"));
     }
 
     private void writeFile() {

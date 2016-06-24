@@ -34,23 +34,6 @@ public class FileSplitterWriterTest {
     }
 
     @Test
-    public void testGetFile() {
-        String line = "abcdefg";
-        File file = fileSplitterWriter.getFile(line);
-        Assert.assertThat(file.getName(), IsEqual.equalTo("a.txt"));
-    }
-
-    @Test
-    public void testGetFileWithPrefixAndHugeSize() {
-        System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "50");
-        String line = "abcdefghijklmnoprstuvxyz abcdefghijklmnoprstuvxyz";
-        fileSplitterWriter.proccessLine(line);
-
-        File file = fileSplitterWriter.getFile(line);
-        Assert.assertThat(file.getName(), IsEqual.equalTo("ab.txt"));
-    }
-
-    @Test
     public void testRun() {
         String line = "abcdefghijklmnoprstuvxyz abcdefghijklmnoprstuvxyz";
         String reverseLine = new StringBuilder(line).reverse().toString();
