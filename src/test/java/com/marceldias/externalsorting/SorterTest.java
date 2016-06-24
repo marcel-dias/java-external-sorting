@@ -32,16 +32,19 @@ public class SorterTest {
     }
 
     @Test
-    public void testSort() {
-        File file = writeFile();
-        String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
-        System.setProperty(ExternalSortingProperties.OUTPUT.getLabel(), tempFilesDir + "/output.txt");
-        sorter = new Sorter(file);
-        sorter.sort();
+    public void testSort() throws Exception {
+        LinkedList<String> list = new LinkedList<>();
+        list.add("right");
+        list.add("left");
+        list.add("Abcd");
+        list.add("zzzzz");
+        list.add("abcd");
+        sorter = new Sorter(list);
+        LinkedList<String> result = sorter.call();
 
-        //read file
-        //check content
-
+        Assert.assertThat(result, IsNull.notNullValue());
+        Assert.assertThat(result.size(), Is.is(5));
+        Assert.assertThat(result, IsIterableContainingInOrder.contains("Abcd","abcd","left","right","zzzzz"));
     }
 
     @Test
@@ -49,8 +52,15 @@ public class SorterTest {
         String left = "left";
         String right = "right";
         Boolean isLeftPrecedent = sorter.isLeftPrecedent(left, right);
-
         Assert.assertThat(isLeftPrecedent, Is.is(Boolean.TRUE));
+    }
+
+    @Test
+    public void testFalseIsLeftPrecedent() {
+        String left = "zyxabcdxpto";
+        String right = "zyxabcdxpta";
+        Boolean isLeftPrecedent = sorter.isLeftPrecedent(left, right);
+        Assert.assertThat(isLeftPrecedent, Is.is(Boolean.FALSE));
     }
 
     @Test
@@ -74,32 +84,11 @@ public class SorterTest {
         left.add("left");
         LinkedList<String> right = new LinkedList<>();
         right.add("right");
-        LinkedList<String> result = sorter.merge(left, right);
+        LinkedList<String> result = new LinkedList<>();
+        result = sorter.merge(left, right, result);
 
         Assert.assertThat(result, IsNull.notNullValue());
         Assert.assertThat(result.size(), Is.is(2));
         Assert.assertThat(result, IsIterableContainingInOrder.contains("left", "right"));
-    }
-
-    @Test
-    public void testAddLineToQueue() throws InterruptedException {
-        String left = "left";
-        String right = "right";
-
-        sorter.addLineToQueue(left);
-        sorter.addLineToQueue(right);
-
-        Assert.assertThat(sorter.getQueue(), IsNull.notNullValue());
-        Assert.assertThat(sorter.getQueue().size(), Is.is(2));
-        Assert.assertThat(sorter.getQueue(), IsIterableContainingInOrder.contains("left", "right"));
-    }
-
-    private File writeFile() {
-        String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
-        File a = Paths.get(tempFilesDir, "test-a.txt").toFile();
-        FileWriter.appendLine("zyxutabcdefghijklmnoprs", a);
-        FileWriter.appendLine("bcdefghijklmnoprstuvxyz", a);
-        FileWriter.appendLine("abcdefghijklmnoprstuvxy", a);
-        return a;
     }
 }

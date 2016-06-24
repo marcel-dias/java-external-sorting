@@ -1,41 +1,51 @@
 package com.marceldias.externalsorting;
 
-import java.io.File;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
-public class Sorter implements FileHandler, Callable<Boolean> {
+/**
+ * Sorter
+ *
+ * Sort an unsorted list using merge sort algorithm
+ *
+ */
+public class Sorter implements Callable<LinkedList<String>> {
 
-    private File file;
-    private LinkedList<String> queue = new LinkedList<>();
+    private LinkedList<String> queue;
 
-    public Sorter(File file) {
-        this.file = file;
+    public Sorter(LinkedList<String> queue) {
+        this.queue = queue;
     }
 
-    public Sorter() {
+    protected Sorter() {
     }
 
+    /**
+     * This method is used by the executors to run multiple sorters at the same time.
+     *
+     * @return a ordered list
+     * @throws Exception
+     */
     @Override
-    public Boolean call() throws Exception {
-        sort();
-        return Boolean.TRUE;
+    public LinkedList<String> call() throws Exception {
+        return sort();
     }
 
-    public void sort() {
-        new FileSplitterReader(this, file.getAbsolutePath()).execute();
-        //order file content
-        queue = compare(queue);
-        //append file content to final file
-        append();
+    /**
+     * Starts the sorting process
+     *
+     * @return
+     */
+    public LinkedList<String> sort() {
+        return compare(queue);
     }
 
-    private void append() {
-        FileWriter.writeLines(queue, file, false);
-    }
-
+    /**
+     * Gets an unsorted list and sort it using merge sort algorithm
+     *
+     * @param list a list to be sorted
+     * @return a sorted list
+     */
     protected LinkedList<String> compare(LinkedList<String> list) {
 
         if (list.size() == 1) {
@@ -50,22 +60,20 @@ public class Sorter implements FileHandler, Callable<Boolean> {
 
         left = compare(left);
         right = compare(right);
-        return merge(left, right);
+        return merge(left, right, list);
     }
 
-    protected LinkedList<String> merge(LinkedList<String> left, LinkedList<String> right) {
-        LinkedList<String> result = new LinkedList<>();
+    /**
+     * Gets left and right ordered lists and merge them into the result list
+     *
+     * @param left an ordered list
+     * @param right an ordered list
+     * @param result list where left and right will be merged
+     * @return a result list with the content of left and right combined
+     */
+    protected LinkedList<String> merge(LinkedList<String> left, LinkedList<String> right, LinkedList<String> result) {
+        result.clear();
         int totalLength = left.size() + right.size();
-
-//        for (int i = 0; i < a.length; i++) {
-//            if (rightIndex >= right.length || (leftIndex < left.length && left[leftIndex] < right[rightIndex])) {
-//                a[i] = left[leftIndex];
-//                leftIndex++;
-//            } else {
-//                a[i] = right[rightIndex];
-//                rightIndex++;
-//            }
-//        }
 
         for (int i = 0; i < totalLength; i++) {
             if (right.isEmpty() || (!left.isEmpty() && isLeftPrecedent(left.peekFirst(), right.peekFirst()))) {
@@ -75,22 +83,17 @@ public class Sorter implements FileHandler, Callable<Boolean> {
             }
         }
 
-//        while (!left.isEmpty() && !right.isEmpty()) {
-//            if (isLeftPrecedent(left.peekFirst(), right.peekFirst())) {
-//                result.offerLast(left.pollFirst());
-//            } else {
-//                result.offerLast(right.pollFirst());
-//            }
-//        }
-//        while (!left.isEmpty()) {
-//            result.offerLast(left.pollFirst());
-//        }
-//        while (!right.isEmpty()) {
-//            result.offerLast(right.pollFirst());
-//        }
         return result;
     }
 
+    /**
+     * Compare strings char by char to anwser if left string is precedent or not
+     *
+     * @param left string
+     * @param right string
+     * @return @{code true} if left string is alphabetically precedent than right string
+     *         and @{code false} if right is precedent
+     */
     protected boolean isLeftPrecedent(String left, String right) {
         int leftIndex = 0;
         int rightIndex = 0;
@@ -107,19 +110,5 @@ public class Sorter implements FileHandler, Callable<Boolean> {
             rightIndex++;
         }
         return isLeftPrecedent;
-    }
-
-    public List<String> sortFilenames(Set<String> filenames) {
-        LinkedList<String> result = compare(new LinkedList<>(filenames));
-        return result;
-    }
-
-    @Override
-    public void addLineToQueue(String line) throws InterruptedException {
-        queue.offer(line);
-    }
-
-    protected LinkedList<String> getQueue() {
-        return queue;
     }
 }
