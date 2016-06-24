@@ -11,10 +11,10 @@ import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 public class FileSplitterReader implements Callable<Boolean> {
-    private FileHandler fileHandler;
+    private QueueHandler fileHandler;
     private String filename;
 
-    public FileSplitterReader(FileHandler fileHandler, String filename) {
+    public FileSplitterReader(QueueHandler fileHandler, String filename) {
         this.fileHandler = fileHandler;
         this.filename = filename;
     }

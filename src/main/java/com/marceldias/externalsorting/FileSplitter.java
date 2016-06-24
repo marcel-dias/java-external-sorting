@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class FileSplitter implements FileHandler {
+public class FileSplitter implements QueueHandler {
 
     private BlockingQueue<String> linesQueue = new ArrayBlockingQueue<>(30);
     private Map<String, File> tempFiles = new ConcurrentHashMap<>();

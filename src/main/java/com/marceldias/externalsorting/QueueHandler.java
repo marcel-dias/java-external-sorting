@@ -3,7 +3,7 @@ package com.marceldias.externalsorting;
 /**
  * FileHandler interface
  */
-public interface FileHandler {
+public interface QueueHandler {
 
     /**
      * Add file line to queue
