@@ -1,7 +1,7 @@
 package com.marceldias.externalsorting;
 
 /**
- * FileHandler interface
+ * QueueHandler interface
  */
 public interface QueueHandler {
 
