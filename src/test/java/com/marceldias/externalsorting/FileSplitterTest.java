@@ -99,7 +99,7 @@ public class FileSplitterTest {
 
         String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
         File file = Paths.get(tempFilesDir, testFilename).toFile();
-        try (BufferedWriter bw = new BufferedWriter(new java.io.FileWriter(file, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new java.io.FileWriter(file, false))) {
 
             bw.write(fileContent);
             bw.newLine();
