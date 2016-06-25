@@ -50,7 +50,7 @@ public class FileSorterTaskTest {
 
     private List<String> readFile(File file) {
         TestQueueHandler qh = new TestQueueHandler();
-        new FileSplitterReader(qh, file.getAbsolutePath()).execute();
+        new FileReader(qh, file.getAbsolutePath()).execute();
         return qh.getQueue();
     }
 

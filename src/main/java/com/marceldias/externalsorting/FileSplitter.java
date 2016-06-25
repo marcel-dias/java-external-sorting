@@ -27,7 +27,7 @@ public class FileSplitter implements QueueHandler {
     public Map<String, File> split() {
         String filename = ExternalSortingProperties.FILENAME.value();
         ExecutorService readerPool = Executors.newFixedThreadPool(1);
-        Future<Boolean> readerFuture = readerPool.submit(getFileSplitterReader(filename));
+        Future<Boolean> readerFuture = readerPool.submit(getFileReader(filename));
         readerPool.shutdown();
 
         ExecutorService writerPool = Executors.newFixedThreadPool(NR_WRITER_THREADS);
@@ -66,8 +66,8 @@ public class FileSplitter implements QueueHandler {
         return file;
     }
 
-    private FileSplitterReader getFileSplitterReader(String filename) {
-        return new FileSplitterReader(this, filename);
+    private FileReader getFileReader(String filename) {
+        return new FileReader(this, filename);
     }
 
     private FileSplitterWriter getFileSplitterWriter() {

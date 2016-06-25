@@ -11,9 +11,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class FileSplitterReaderTest {
+public class FileReaderTest {
 
-    private FileSplitterReader fileSplitterReader;
+    private FileReader fileSplitterReader;
     private FileSplitter fileSplitter;
     private FileSplitterWriter fileSplitterWriter;
 
@@ -36,7 +36,7 @@ public class FileSplitterReaderTest {
         writeFile();
         String filename = ExternalSortingProperties.TEMP_FILES_DIR.value() + "/a.txt";
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
-        fileSplitterReader = new FileSplitterReader(fileSplitter, ExternalSortingProperties.FILENAME.value());
+        fileSplitterReader = new FileReader(fileSplitter, ExternalSortingProperties.FILENAME.value());
         fileSplitter.setIsReaderDone(fileSplitterReader.call());
 
         Assert.assertThat(fileSplitter.getLinesQueue().size(), Is.is(3));
@@ -47,7 +47,7 @@ public class FileSplitterReaderTest {
     public void testFileNotFound() {
         String filename = ExternalSortingProperties.TEMP_FILES_DIR.value() + "/fileNotFound.txt";
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
-        fileSplitterReader = new FileSplitterReader(fileSplitter, ExternalSortingProperties.FILENAME.value());
+        fileSplitterReader = new FileReader(fileSplitter, ExternalSortingProperties.FILENAME.value());
         fileSplitterReader.call();
     }
 

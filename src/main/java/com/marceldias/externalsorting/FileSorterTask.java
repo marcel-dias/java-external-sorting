@@ -27,7 +27,7 @@ public class FileSorterTask implements Callable<Boolean>, QueueHandler {
      */
     @Override
     public Boolean call() throws Exception {
-        new FileSplitterReader(this, file.getAbsolutePath()).execute();
+        new FileReader(this, file.getAbsolutePath()).execute();
 
         Sorter sorter = new Sorter(queue);
         queue = sorter.sort();
