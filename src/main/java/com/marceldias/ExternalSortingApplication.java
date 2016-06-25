@@ -33,17 +33,11 @@ public class ExternalSortingApplication {
         startTime = System.currentTimeMillis();
         // asynchronous
         // read, sort in alphabetic order and override file
-        FileSorter sorter = new FileSorter();
-        List<String> orderedFiles = sorter.sort(tempFiles);
+        List<String> orderedFiles = FileSorter.sort(tempFiles);
 
         endTime = System.currentTimeMillis();
         elapsedTimeInMillis = (endTime - startTime);
         System.out.println("Sorter elapsed time: " + elapsedTimeInMillis + " ms");
-
-        //synchronous
-        // maybe read, sort and merge
-//      sort in alphabetic order (filelist);
-//      for each file in filelist
 
         // read and merge
         startTime = System.currentTimeMillis();
