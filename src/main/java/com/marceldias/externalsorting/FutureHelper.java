@@ -6,6 +6,8 @@ import java.util.concurrent.Future;
 
 public final class FutureHelper {
 
+    private FutureHelper() {}
+
     public static void waitExecution(Future... futures) {
         for (Future f : futures) {
             waitExecution(f);
@@ -15,9 +17,7 @@ public final class FutureHelper {
     public static <T> T waitExecution(Future<T> future) {
         try {
             return future.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return null;
