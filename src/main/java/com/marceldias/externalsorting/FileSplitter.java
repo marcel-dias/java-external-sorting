@@ -20,9 +20,14 @@ public class FileSplitter implements QueueHandler {
     private Map<String, File> tempFiles = new ConcurrentHashMap<>();
     private final Set<String> exhaustedTempFiles = ConcurrentHashMap.newKeySet();
     private boolean isReaderDone = false;
+    private TimeMetric timeMetric;
     private static AtomicLong count = new AtomicLong(0);
     private String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
     private static Integer NR_WRITER_THREADS = Integer.valueOf(ExternalSortingProperties.NR_WRITER_THREADS.value());
+
+    {
+        timeMetric = new TimeMetric("File Splitter");
+    }
 
     public Map<String, File> split() {
         String filename = ExternalSortingProperties.FILENAME.value();
@@ -39,6 +44,7 @@ public class FileSplitter implements QueueHandler {
 
         setIsReaderDone(FutureHelper.waitExecution(readerFuture));
         FutureHelper.waitExecution(futures);
+        print();
         return tempFiles;
     }
 
@@ -64,6 +70,12 @@ public class FileSplitter implements QueueHandler {
         }
 
         return file;
+    }
+
+    private void print() {
+        timeMetric.print();
+        System.out.println("Lines processed: " + getCount().get());
+        System.out.println("Number of temp files: " + tempFiles.size());
     }
 
     private FileReader getFileReader(String filename) {

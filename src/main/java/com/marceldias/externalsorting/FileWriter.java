@@ -36,6 +36,7 @@ public class FileWriter {
     }
 
     public static void mergeFiles(List<File> files) {
+        TimeMetric timeMetric = new TimeMetric("Merge Files");
         File output = Paths.get(ExternalSortingProperties.OUTPUT.value()).toFile();
         try (BufferedWriter bw = new BufferedWriter(new java.io.FileWriter(output, false))) {
             for (File file : files) {
@@ -55,5 +56,6 @@ public class FileWriter {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+        timeMetric.print();
     }
 }

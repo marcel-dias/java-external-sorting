@@ -16,6 +16,7 @@ public class FileSorter {
     private FileSorter(){}
 
     public static List<String> sort(Map<String, File> files) {
+        TimeMetric timeMetric = new TimeMetric("File Sorter");
         Sorter sorter = new Sorter(new LinkedList<>(files.keySet()));
         List<String> orderedFiles = sorter.sort();
 
@@ -26,6 +27,7 @@ public class FileSorter {
         }
         writerPool.shutdown();
         FutureHelper.waitExecution(futures);
+        timeMetric.print();
         return orderedFiles;
     }
 }
