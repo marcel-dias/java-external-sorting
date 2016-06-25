@@ -9,10 +9,10 @@ if [ "x$NR_WRITER_THREADS" = "x" ]; then
     NR_WRITER_THREADS="8"
 fi
 if [ "x$TEMP_FILES_DIR" = "x" ]; then
-    TEMP_FILES_DIR="/tmp/"
+    TEMP_FILES_DIR="/tmp/externalsorting"
 fi
-jarfile=$(ls -1t external-sorting.jar | head -n 1)
-if [ "x$jarfile" = "x" ]; then
+jarfile="external-sorting.jar"
+if [ ! -e external-sorting.jar ]; then
     jarfile="target/external-sorting.jar"
 fi
 
