@@ -1,3 +1,3 @@
 #!/bin/bash
 rm -rf /tmp/externalsorting/*
-rm -rf output.txt
+rm -rf data/output.txt
