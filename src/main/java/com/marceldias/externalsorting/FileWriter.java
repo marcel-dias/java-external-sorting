@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,8 +47,6 @@ public class FileWriter {
                         bw.write(line);
                         bw.newLine();
                     }
-                } catch (NoSuchFileException e) {
-                    continue;
                 } catch (Exception e) {
                     continue;
                 }
@@ -57,5 +56,13 @@ public class FileWriter {
             ioe.printStackTrace();
         }
         timeMetric.print();
+    }
+
+    public static void move(File source, File destine) {
+        try {
+            Files.move(source.toPath(), destine.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
