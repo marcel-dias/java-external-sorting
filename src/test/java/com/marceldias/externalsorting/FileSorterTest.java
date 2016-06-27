@@ -37,7 +37,7 @@ public class FileSorterTest {
         files.put(testZfile, filez);
         files.put(testFilename, file);
 
-        List<String> orderedList = FileSorter.sort(files);
+        List<String> orderedList = new FileSorter().sort(files);
         Assert.assertThat(orderedList.size(), Is.is(2));
         Assert.assertThat(orderedList, IsIterableContainingInOrder.contains("test.txt", "z-test.txt"));
 

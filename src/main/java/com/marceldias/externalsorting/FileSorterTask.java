@@ -29,9 +29,9 @@ public class FileSorterTask implements Callable<Boolean>, QueueHandler {
     public Boolean call() throws Exception {
         new FileReader(this, file.getAbsolutePath()).execute();
 
-        Sorter sorter = new Sorter(queue);
-        queue = sorter.sort();
-        FileWriter.writeLines(queue, file, false);
+        Sorter sorter = new Sorter();
+        queue = sorter.sort(queue);
+        new FileWriter().writeLines(queue, file, false);
         return Boolean.TRUE;
     }
 
