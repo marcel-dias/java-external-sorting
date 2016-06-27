@@ -27,7 +27,7 @@ public class ExternalSortingApplication {
         }
     }
 
-    private void execute() {
+    protected void execute() {
         System.out.println(" Running External Sorting!");
         TimeMetric timeMetric = new TimeMetric("External Sorting App");
 
