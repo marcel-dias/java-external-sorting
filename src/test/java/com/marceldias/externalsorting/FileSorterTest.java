@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -37,10 +38,7 @@ public class FileSorterTest {
         files.put(testZfile, filez);
         files.put(testFilename, file);
 
-        List<String> orderedList = new FileSorter().sort(files);
-        Assert.assertThat(orderedList.size(), Is.is(2));
-        Assert.assertThat(orderedList, IsIterableContainingInOrder.contains("test.txt", "z-test.txt"));
-
+        new FileSorter().sort(new HashSet<>(files.values()));
         FileSorterTask task = new FileSorterTask(file);
         task.call();
 
