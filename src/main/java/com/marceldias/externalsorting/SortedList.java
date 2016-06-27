@@ -6,7 +6,7 @@ import java.util.LinkedList;
 /**
  * SortedList
  *
- * Is a sorted list that keeps itself sorted according to the Sorter.
+ * Is an implementation of PriorityQueue. Keeps itself sorted according to the Sorter.
  * @see Sorter
  *
  * @param <T> T class that extends Sortable

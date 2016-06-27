@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+/**
+ * Helper class to handle future executions.
+ */
 public final class FutureHelper {
 
     private FutureHelper() {}

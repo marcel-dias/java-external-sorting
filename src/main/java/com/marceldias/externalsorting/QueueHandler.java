@@ -2,6 +2,8 @@ package com.marceldias.externalsorting;
 
 /**
  * QueueHandler interface
+ *
+ * Define a behavior to add a line to a Queue.
  */
 public interface QueueHandler {
 

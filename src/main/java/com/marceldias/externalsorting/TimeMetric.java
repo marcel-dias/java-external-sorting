@@ -1,5 +1,10 @@
 package com.marceldias.externalsorting;
 
+/**
+ * TimeMetric
+ *
+ * Utility class to print the elapsed time of a step.
+ */
 public class TimeMetric {
 
     private String name;

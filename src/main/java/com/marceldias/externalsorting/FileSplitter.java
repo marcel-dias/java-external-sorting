@@ -13,6 +13,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * FileSplitter centralizes the logic to read and split the file to temporary files
+ */
 public class FileSplitter implements QueueHandler {
 
     private BlockingQueue<String> linesQueue = new ArrayBlockingQueue<>(30);
@@ -28,6 +31,10 @@ public class FileSplitter implements QueueHandler {
         timeMetric = new TimeMetric("File Splitter");
     }
 
+    /**
+     * Starts the Reader and Writer Executors
+     * @return a map where the key is the filename without the extension and the value is the file instance.
+     */
     public Map<String, File> split() {
         String filename = ExternalSortingProperties.FILENAME.value();
         ExecutorService readerPool = Executors.newFixedThreadPool(1);
@@ -47,6 +54,10 @@ public class FileSplitter implements QueueHandler {
         return tempFiles;
     }
 
+    /**
+     * Verifies for the files that has the same initial char and keep track of them
+     * @param file file to be verified
+     */
     protected synchronized void checkSameFirstCharFilename(File file) {
         String firstChar = ""+file.getName().charAt(0);
         Set<File> temp = sameFirstCharFilename.get(firstChar);
@@ -55,6 +66,17 @@ public class FileSplitter implements QueueHandler {
         }
         temp.add(file);
         sameFirstCharFilename.put(firstChar, temp);
+    }
+
+    /**
+     * Add a temporary file to the temporary files map.
+     * @param filename filename as a key
+     * @param file the file instance as value
+     */
+    public void addTempFile(String filename, File file) {
+        if (!tempFiles.containsKey(filename)) {
+            tempFiles.put(filename, file);
+        }
     }
 
     private void print() {
@@ -91,11 +113,6 @@ public class FileSplitter implements QueueHandler {
         return count;
     }
 
-    public void addTempFile(String filename, File file) {
-        if (!tempFiles.containsKey(filename)) {
-            tempFiles.put(filename, file);
-        }
-    }
 
     public Map<String, File> getTempFiles() {
         return tempFiles;

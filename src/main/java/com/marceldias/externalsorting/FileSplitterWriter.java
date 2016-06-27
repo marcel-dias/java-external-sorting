@@ -5,6 +5,12 @@ import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * FileSplitterWriter is a queue consumer.
+ * Defines for which temporary file will write the line based on the line content and size of temporary file.
+ *
+ * Implements Callable to run multiples consumers at same time.
+ */
 public class FileSplitterWriter extends FileWriter implements Callable<Boolean> {
     private FileSplitter fileSplitter;
     private String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
@@ -13,6 +19,16 @@ public class FileSplitterWriter extends FileWriter implements Callable<Boolean> 
         this.fileSplitter = fileSplitter;
     }
 
+    /**
+     * Consumes the fileSplitter polling lines from it with the 500 milliseconds of timeout.
+     * Consumes the queue until the FileReader has finished.
+     *
+     * @see FileSplitter#getLinesQueue()
+     * @see FileReader
+     *
+     * @return @{code true} if runs well
+     *         @{code true} if get a exception
+     */
     @Override
     public Boolean call() {
         try {
@@ -29,6 +45,11 @@ public class FileSplitterWriter extends FileWriter implements Callable<Boolean> 
         return Boolean.TRUE;
     }
 
+    /**
+     * Process the line.
+     * Get the file and append contente line to it.
+     * @param line
+     */
     protected void proccessLine(String line) {
         File file = getFile(line);
         appendLine(line, file);
@@ -38,6 +59,15 @@ public class FileSplitterWriter extends FileWriter implements Callable<Boolean> 
         return getFile("", line);
     }
 
+    /**
+     * Define the temporary file based on the line content and temporary file size.
+     * If a temporary file get full then it will add the one more char to a new temporary file.
+     * Ex: 'a.txt' temporary file get full and the actual line is 'abcdefg' the new file will be 'ab.txt'
+     *
+     * @param prefix a prefix to the temporary file name
+     * @param line the line content to define the temporary file
+     * @return the temporary file to write the line
+     */
     protected File getFile(String prefix, String line) {
         char start = line.charAt(0);
         String filename = (prefix + start).toLowerCase();

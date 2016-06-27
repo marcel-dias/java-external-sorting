@@ -9,8 +9,17 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Verifies if a file is in Alphabetical Order
+ */
 public class AlphabeticalOrderValidator {
 
+    /**
+     * Iterates each file line verifying if the file is in Alphabetical Order
+     * @param file the file to be verified
+     * @return @{code true} if the file is in Alphabetical Order
+     *         @{code false} if the file isn't in Alphabetical Order
+     */
     public Boolean validate(String file) {
         TimeMetric timeMetric = new TimeMetric("AlphabeticalOrderValidator");
         Path path = Paths.get(file);
