@@ -5,15 +5,17 @@ import java.util.LinkedList;
 
 public class SortedList<T extends Sortable> extends LinkedList<T> {
 
+    private LinkedList<String> terms = new LinkedList<>();
+
     public boolean add(T obj) {
-        LinkedList<String> terms = new LinkedList<>();
+        terms.clear();
         Iterator<T> iter = iterator();
         for ( ; iter.hasNext();) {
             terms.add(iter.next().getTerm());
         }
         terms.add(obj.getTerm());
-        Sorter sorter = new Sorter(terms);
-        terms = sorter.sort();
+        Sorter sorter = new Sorter();
+        terms = sorter.sort(terms);
         int index = terms.indexOf(obj.getTerm());
         add(index, obj);
         return true;
