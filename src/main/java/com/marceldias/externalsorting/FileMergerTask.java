@@ -42,7 +42,7 @@ public class FileMergerTask implements Callable<Boolean> {
      * @param outputfile file to merge the content of files list
      */
     public void executeKWayMerge(Set<File> files, String outputfile) {
-        TimeMetric timeMetric = new TimeMetric("File Sort And Merge");
+        TimeMetric timeMetric = new TimeMetric("FileMergerTask k-way merge");
         //create a temporary file
         File dir = Paths.get(ExternalSortingProperties.TEMP_FILES_DIR.value(), "k-way").toFile();
         dir.mkdirs();
