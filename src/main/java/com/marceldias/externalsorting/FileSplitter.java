@@ -1,6 +1,7 @@
 package com.marceldias.externalsorting;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class FileSplitter implements QueueHandler {
      * @return a map where the key is the filename without the extension and the value is the file instance.
      */
     public Map<String, File> split() {
+        createTempDir();
         String filename = ExternalSortingProperties.FILENAME.value();
         ExecutorService readerPool = Executors.newFixedThreadPool(1);
         Future<Boolean> readerFuture = readerPool.submit(getFileReader(filename));
@@ -55,7 +57,9 @@ public class FileSplitter implements QueueHandler {
     }
 
     /**
-     * Verifies for the files that has the same initial char and keep track of them
+     * Verifies for the files that has the same initial char and keep track of them.
+     * Every temp file will have an entry here.
+     *
      * @param file file to be verified
      */
     protected synchronized void checkSameFirstCharFilename(File file) {
@@ -76,6 +80,13 @@ public class FileSplitter implements QueueHandler {
     public void addTempFile(String filename, File file) {
         if (!tempFiles.containsKey(filename)) {
             tempFiles.put(filename, file);
+        }
+    }
+
+    private void createTempDir() {
+        File tempDir = Paths.get(ExternalSortingProperties.TEMP_FILES_DIR.value()).toFile();
+        if (!tempDir.exists()) {
+            tempDir.mkdirs();
         }
     }
 
