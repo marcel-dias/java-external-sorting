@@ -1,5 +1,7 @@
 package com.marceldias.externalsorting;
 
+import com.marceldias.externalsorting.exception.ExternalSortingException;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +12,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class FileWriter {
 
@@ -30,8 +33,8 @@ public class FileWriter {
                 bw.newLine();
             }
             bw.flush();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (IOException e) {
+            throw new ExternalSortingException(e.getMessage(), e);
         }
     }
 
@@ -51,8 +54,8 @@ public class FileWriter {
                 }
                 bw.flush();
             }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (IOException e) {
+            throw new ExternalSortingException(e.getMessage(), e);
         }
         timeMetric.print();
     }
@@ -61,7 +64,13 @@ public class FileWriter {
         try {
             Files.move(source.toPath(), destine.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ExternalSortingException(e.getMessage(), e);
+        }
+    }
+
+    public void delete(Set<File> files) {
+        for (File file : files) {
+            file.delete();
         }
     }
 }

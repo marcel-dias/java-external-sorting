@@ -1,5 +1,6 @@
 package com.marceldias.externalsorting;
 
+import com.marceldias.externalsorting.exception.ExternalSortingException;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsNull;
@@ -13,13 +14,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FileWriterTest {
 
     @After
     public void tearDown() throws IOException {
-        String[] testFiles = {"test-a.txt", "test-z.txt","output.txt"};
+        String[] testFiles = {"test-a.txt", "test-b.txt", "test-z.txt","output.txt"};
         for (String file : testFiles) {
             Files.deleteIfExists(Paths.get(ExternalSortingProperties.TEMP_FILES_DIR.value(), file));
         }
@@ -56,6 +59,33 @@ public class FileWriterTest {
 
         Assert.assertThat(source.exists(), Is.is(Boolean.FALSE));
     }
+
+    @Test(expected = ExternalSortingException.class)
+    public void testMoveInexistentFile() {
+        String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
+        File source = Paths.get(tempFilesDir, "source").toFile();
+        File destine = Paths.get(tempFilesDir, "destine").toFile();
+        new FileWriter().move(source, destine);
+    }
+
+    @Test
+    public void testDelete() {
+        File toDelete = writeFile("test-a.txt", "a\nb\nz\nm");
+        File toDelete2 = writeFile("test-b.txt", "a\nb\nz\nm");
+        File toDelete3 = writeFile("test-z.txt", "a\nb\nz\nm");
+        Set<File> files = new HashSet<>(3);
+        files.add(toDelete);
+        files.add(toDelete2);
+        files.add(toDelete3);
+
+        new FileWriter().delete(files);
+
+        Assert.assertThat(toDelete.exists(),  Is.is(Boolean.FALSE));
+        Assert.assertThat(toDelete2.isFile(), Is.is(Boolean.FALSE));
+        Assert.assertThat(toDelete3.exists(), Is.is(Boolean.FALSE));
+    }
+
+
 
     private List<String> readFile(File file) {
         TestQueueHandler qh = new TestQueueHandler();
