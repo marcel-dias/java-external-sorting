@@ -27,14 +27,14 @@ public class FileMerger {
      *
      * @param sortedFiles list with all sorted files
      * @param filesToMerge map files to merge where key is first char 'a'
-     *                     and value is a set with all fragments 'ab','ac'
+     *                     and value is a set with all fragments 'a','ab','ac'
      * @return list of sorted files without the fragments
      */
     public List<String> doMerge(List<String> sortedFiles, Map<String, Set<File>> filesToMerge) {
         TimeMetric timeMetric = new TimeMetric("K-way Merge");
         List<String> toRemove = new ArrayList<>();
 
-        ExecutorService mergerPool = Executors.newFixedThreadPool(NR_WRITER_THREADS/2);
+        ExecutorService mergerPool = Executors.newFixedThreadPool(NR_WRITER_THREADS);
         List<Future> futures = new ArrayList();
 
         for (String filename : sortedFiles) {
