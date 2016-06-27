@@ -1,7 +1,6 @@
 package com.marceldias.externalsorting;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +18,10 @@ public class FileSplitter implements QueueHandler {
     private BlockingQueue<String> linesQueue = new ArrayBlockingQueue<>(30);
     private Map<String, File> tempFiles = new ConcurrentHashMap<>();
     private final Set<String> exhaustedTempFiles = ConcurrentHashMap.newKeySet();
+    private final Map<String, Set<File>> sameFirstCharFilename = new ConcurrentHashMap<>();
     private boolean isReaderDone = false;
     private TimeMetric timeMetric;
     private static AtomicLong count = new AtomicLong(0);
-    private String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
     private static Integer NR_WRITER_THREADS = Integer.valueOf(ExternalSortingProperties.NR_WRITER_THREADS.value());
 
     {
@@ -48,28 +47,14 @@ public class FileSplitter implements QueueHandler {
         return tempFiles;
     }
 
-    protected File getFile( String line) {
-        return getFile("", line);
-    }
-
-    protected File getFile(String prefix, String line) {
-        char start = line.charAt(0);
-        String filename = (prefix + start).toLowerCase();
-
-        File file = getTempFiles().get(filename);
-        if (file == null) {
-            file = Paths.get(tempFilesDir, filename + ".txt").toFile();
-            file.deleteOnExit();
-            addTempFile(filename, file);
-        } else {
-            Long maxTempFileSize = Long.valueOf(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.value());
-            if (isFileExhausted(filename) || file.length() >= maxTempFileSize) {
-                addExhaustedFile(filename);
-                file = getFile("" + start, line.substring(1));
-            }
+    protected synchronized void checkSameFirstCharFilename(File file) {
+        String firstChar = ""+file.getName().charAt(0);
+        Set<File> temp = sameFirstCharFilename.get(firstChar);
+        if (temp == null) {
+            temp = ConcurrentHashMap.newKeySet();
         }
-
-        return file;
+        temp.add(file);
+        sameFirstCharFilename.put(firstChar, temp);
     }
 
     private void print() {
@@ -127,5 +112,9 @@ public class FileSplitter implements QueueHandler {
 
     public boolean isFileExhausted(String filename) {
         return exhaustedTempFiles.contains(filename);
+    }
+
+    public Map<String, Set<File>> getSameFirstCharFilename() {
+        return sameFirstCharFilename;
     }
 }

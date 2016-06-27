@@ -2,12 +2,10 @@ package com.marceldias.externalsorting;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.core.Is;
-import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.BufferedWriter;
@@ -16,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.Set;
 
 public class FileSplitterTest {
 
@@ -69,27 +68,11 @@ public class FileSplitterTest {
         Assert.assertThat(tempFiles, IsNull.notNullValue());
         Assert.assertThat(tempFiles.size(), Is.is(3));
         Assert.assertThat(tempFiles.keySet(), CoreMatchers.hasItems("a", "ab", "ac"));
-    }
 
-    @Test
-    public void testGetFile() {
-        String line = "abcdefg";
-        File file = fileSplitter.getFile(line);
-        Assert.assertThat(file.getName(), IsEqual.equalTo("a.txt"));
-    }
-
-    @Test
-    public void testGetFileWithPrefixAndHugeSize() {
-        writeFile();
-        String filename = tempFilesDir + "/" + testFilename;
-        System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), filename);
-        System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "50");
-
-        String line = "adcdefghijklmnoprstuvxyz abcdefghijklmnoprstuvxyz";
-        fileSplitter.split();
-        File file = fileSplitter.getFile(line);
-
-        Assert.assertThat(file.getName(), IsEqual.equalTo("ad.txt"));
+        Map<String, Set<File>> sameFirstCharFilename = fileSplitter.getSameFirstCharFilename();
+        Assert.assertThat(sameFirstCharFilename.size(), Is.is(1));
+        Assert.assertThat(sameFirstCharFilename.keySet(), CoreMatchers.hasItems("a"));
+        Assert.assertThat(sameFirstCharFilename.get("a").size(), Is.is(3));
     }
 
     private void writeFile() {
