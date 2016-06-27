@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -39,8 +38,8 @@ public class SorterTest {
         list.add("Abcd");
         list.add("zzzzz");
         list.add("abcd");
-        sorter = new Sorter(list);
-        LinkedList<String> result = sorter.sort();
+        sorter = new Sorter();
+        LinkedList<String> result = sorter.sort(list);
 
         Assert.assertThat(result, IsNull.notNullValue());
         Assert.assertThat(result.size(), Is.is(5));

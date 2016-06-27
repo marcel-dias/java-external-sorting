@@ -10,21 +10,12 @@ import java.util.LinkedList;
  */
 public class Sorter {
 
-    private LinkedList<String> queue;
-
-    public Sorter(LinkedList<String> queue) {
-        this.queue = queue;
-    }
-
-    protected Sorter() {
-    }
-
     /**
      * Starts the sorting process
      *
      * @return
      */
-    public LinkedList<String> sort() {
+    public LinkedList<String> sort(LinkedList<String> queue) {
         return compare(queue);
     }
 
@@ -82,7 +73,7 @@ public class Sorter {
      * @return @{code true} if left string is alphabetically precedent than right string
      *         and @{code false} if right is precedent
      */
-    protected boolean isLeftPrecedent(String left, String right) {
+    public boolean isLeftPrecedent(String left, String right) {
         int leftIndex = 0;
         int rightIndex = 0;
 
