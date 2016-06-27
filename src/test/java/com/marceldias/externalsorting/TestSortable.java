@@ -1,10 +1,10 @@
 package com.marceldias.externalsorting;
 
-public class SortableTest implements Sortable {
+public class TestSortable implements Sortable {
 
     private String line;
 
-    public SortableTest(String line) {
+    public TestSortable(String line) {
         this.line = line;
     }
 
