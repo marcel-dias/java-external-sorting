@@ -36,7 +36,7 @@ public class FileWriterTest {
         File output = Paths.get(ExternalSortingProperties.TEMP_FILES_DIR.value(), "output.txt").toFile();
         System.setProperty(ExternalSortingProperties.OUTPUT.getLabel(), output.getAbsolutePath());
 
-        FileWriter.mergeFiles(files);
+        new FileWriter().mergeFiles(files);
 
         List<String> outputContent = readFile(output);
         Assert.assertThat(outputContent, IsNull.notNullValue());
@@ -49,7 +49,7 @@ public class FileWriterTest {
         File source = writeFile("test-a.txt", "a\nb\nz\nm");
         String tempFilesDir = ExternalSortingProperties.TEMP_FILES_DIR.value();
         File destine = Paths.get(tempFilesDir, "test-z.txt").toFile();
-        FileWriter.move(source, destine);
+        new FileWriter().move(source, destine);
 
         Assert.assertThat(destine.exists(), Is.is(Boolean.TRUE));
         Assert.assertThat(destine.isFile(), Is.is(Boolean.TRUE));

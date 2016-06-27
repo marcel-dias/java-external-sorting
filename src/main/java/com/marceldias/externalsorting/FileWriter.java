@@ -15,15 +15,15 @@ public class FileWriter {
 
     private static final Boolean append = Boolean.TRUE;
 
-    public static void writeLine(String line, File file, Boolean append) {
+    public void writeLine(String line, File file, Boolean append) {
         writeLines(Arrays.asList(line), file, append);
     }
 
-    public static void appendLine(String line, File file) {
+    public void appendLine(String line, File file) {
         writeLine(line, file, append);
     }
 
-    public static void writeLines(List<String> lines, File file, Boolean append) {
+    public void writeLines(List<String> lines, File file, Boolean append) {
         try (BufferedWriter bw = new BufferedWriter(new java.io.FileWriter(file, append))) {
             for (String line : lines) {
                 bw.write(line);
@@ -35,7 +35,7 @@ public class FileWriter {
         }
     }
 
-    public static void mergeFiles(List<File> files) {
+    public void mergeFiles(List<File> files) {
         TimeMetric timeMetric = new TimeMetric("Merge Files");
         File output = Paths.get(ExternalSortingProperties.OUTPUT.value()).toFile();
         try (BufferedWriter bw = new BufferedWriter(new java.io.FileWriter(output, false))) {
@@ -57,7 +57,7 @@ public class FileWriter {
         timeMetric.print();
     }
 
-    public static void move(File source, File destine) {
+    public void move(File source, File destine) {
         try {
             Files.move(source.toPath(), destine.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
