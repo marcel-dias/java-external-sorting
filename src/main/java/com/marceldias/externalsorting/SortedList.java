@@ -3,6 +3,14 @@ package com.marceldias.externalsorting;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+/**
+ * SortedList
+ *
+ * Is a sorted list that keeps itself sorted according to the Sorter.
+ * @see Sorter
+ *
+ * @param <T> T class that extends Sortable
+ */
 public class SortedList<T extends Sortable> extends LinkedList<T> {
 
     private LinkedList<String> terms = new LinkedList<>();
