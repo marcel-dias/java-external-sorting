@@ -47,6 +47,24 @@ public class SorterTest {
     }
 
     @Test
+    public void testIsLeftPrecedentUppercase() {
+        String left = "LEFT";
+        String right = "RIGHT";
+        Boolean isLeftPrecedent = sorter.isLeftPrecedent(left, right);
+        Assert.assertThat(isLeftPrecedent, Is.is(Boolean.TRUE));
+    }
+
+    @Test
+    public void testIsLeftPrecedentUppercaseLowerCase() {
+        char a = 97;
+        char B = 66;
+        String left = String.valueOf(a);
+        String right = String.valueOf(B);
+        Boolean isLeftPrecedent = sorter.isLeftPrecedent(left, right);
+        Assert.assertThat(isLeftPrecedent, Is.is(Boolean.TRUE));
+    }
+
+    @Test
     public void testIsLeftPrecedent() {
         String left = "left";
         String right = "right";

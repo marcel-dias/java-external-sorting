@@ -79,9 +79,11 @@ public class Sorter {
 
         boolean isLeftPrecedent = true;
         while (leftIndex < left.length() && rightIndex < right.length()) {
-            if (left.charAt(leftIndex) < right.charAt(rightIndex)) {
+            char leftChar = Character.toLowerCase(left.charAt(leftIndex));
+            char rightChar = Character.toLowerCase(right.charAt(rightIndex));
+            if (leftChar < rightChar) {
                 break;
-            } else if (left.charAt(leftIndex) > right.charAt(rightIndex)) {
+            } else if (leftChar > rightChar) {
                 isLeftPrecedent = false;
                 break;
             }
