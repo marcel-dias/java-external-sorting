@@ -21,6 +21,7 @@ public class AlphabeticalOrderValidator {
      *         @{code false} if the file isn't in Alphabetical Order
      */
     public Boolean validate(String file) {
+        System.out.println("Running AlphabeticalOrderValidator!");
         TimeMetric timeMetric = new TimeMetric("AlphabeticalOrderValidator");
         Path path = Paths.get(file);
         Sorter sorter = new Sorter();
