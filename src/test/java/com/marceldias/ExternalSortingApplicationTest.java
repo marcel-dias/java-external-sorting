@@ -99,4 +99,18 @@ public class ExternalSortingApplicationTest {
         app.validate();
     }
 
+    @Test
+    public void testMainMethod() {
+        System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), "data/input.txt");
+        ExternalSortingApplication.main("");
+    }
+
+    @Test
+    public void testMainMethodValidate() {
+        System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), "data/input.txt");
+        ExternalSortingApplication.main("");
+        ExternalSortingApplication.main("validate");
+    }
+
+
 }
