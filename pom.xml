@@ -14,6 +14,10 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
+
     <build>
         <finalName>external-sorting</finalName>
         <plugins>
