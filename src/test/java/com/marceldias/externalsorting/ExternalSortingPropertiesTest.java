@@ -1,11 +1,15 @@
 package com.marceldias.externalsorting;
 
 import com.marceldias.externalsorting.exception.ExternalSortingException;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 public class ExternalSortingPropertiesTest {
 
@@ -59,5 +63,19 @@ public class ExternalSortingPropertiesTest {
     public void testValidateSmallTempFileSize() {
         System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "1024");
         ExternalSortingProperties.MAX_TEMP_FILE_SIZE.isValid();
+    }
+
+    @Test
+    public void testValidateLargerTempFileSize() {
+        //Capture the sysout
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        System.setOut(ps);
+
+        System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), ""+ (1024 * 1024 * 25));
+        ExternalSortingProperties.MAX_TEMP_FILE_SIZE.isValid();
+        System.out.flush();
+        String sysout = baos.toString();
+        Assert.assertThat(sysout, CoreMatchers.containsString("WARNING!!"));
     }
 }

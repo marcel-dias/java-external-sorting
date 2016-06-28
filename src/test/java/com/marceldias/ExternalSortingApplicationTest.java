@@ -2,9 +2,8 @@ package com.marceldias;
 
 import com.marceldias.externalsorting.AlphabeticalOrderValidator;
 import com.marceldias.externalsorting.ExternalSortingProperties;
-import com.marceldias.externalsorting.FileReader;
-import com.marceldias.externalsorting.TestQueueHandler;
 import com.marceldias.externalsorting.exception.ExternalSortingException;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
@@ -12,8 +11,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -24,7 +25,8 @@ import java.util.Map;
 public class ExternalSortingApplicationTest {
 
     @After
-    public void tearDown() {
+    public void tearDown() throws IOException {
+        Files.deleteIfExists(Paths.get("data/output.txt"));
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(),
                 ExternalSortingProperties.FILENAME.getDefaultValue());
         System.setProperty(ExternalSortingProperties.NR_WRITER_THREADS.getLabel(),
@@ -101,16 +103,37 @@ public class ExternalSortingApplicationTest {
 
     @Test
     public void testMainMethod() {
+        //Capture the sysout
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        System.setOut(ps);
+
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), "data/input.txt");
         ExternalSortingApplication.main("");
+
+        System.out.flush();
+        String sysout = baos.toString();
+        Assert.assertThat(sysout, CoreMatchers.startsWith("Running External Sorting!"));
     }
 
     @Test
     public void testMainMethodValidate() {
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), "data/input.txt");
         ExternalSortingApplication.main("");
+
+        //Capture the sysout
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        System.setOut(ps);
+
         ExternalSortingApplication.main("validate");
+        System.out.flush();
+        String sysout = baos.toString();
+        Assert.assertThat(sysout, CoreMatchers.startsWith("Running AlphabeticalOrderValidator!"));
     }
 
-
+    @Test(expected = ExternalSortingException.class)
+    public void testMainMethodValidateError() {
+        ExternalSortingApplication.main("validate");
+    }
 }
