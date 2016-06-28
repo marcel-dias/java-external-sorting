@@ -17,4 +17,4 @@ if [ ! -e external-sorting.jar ]; then
 fi
 
 #-agentlib:hprof=format=b,file=ext.hprof,cpu=samples,thread=y
-java -server -Xmx256m -Xms256m -XX:+TieredCompilation -Dfilename=$FILENAME -DnrWriterThreads=$NR_WRITER_THREADS -Doutput=$OUTPUT -DtempFilesDir=$TEMP_FILES_DIR -jar $jarfile
+java -server -Xmx256m -Xms256m -XX:+TieredCompilation -Dfilename=$FILENAME -DnrWriterThreads=$NR_WRITER_THREADS -Doutput=$OUTPUT -DtempFilesDir=$TEMP_FILES_DIR -jar $jarfile $1
