@@ -23,6 +23,16 @@ import java.util.Map;
 
 public class ExternalSortingApplicationTest {
 
+    @After
+    public void tearDown() {
+        System.setProperty(ExternalSortingProperties.FILENAME.getLabel(),
+                ExternalSortingProperties.FILENAME.getDefaultValue());
+        System.setProperty(ExternalSortingProperties.NR_WRITER_THREADS.getLabel(),
+                ExternalSortingProperties.NR_WRITER_THREADS.getDefaultValue());
+        System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(),
+                ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getDefaultValue());
+    }
+
     @Test
     public void testGetOrderedFileList() {
         List<String> orderedNames = new ArrayList<>(3);
@@ -62,27 +72,31 @@ public class ExternalSortingApplicationTest {
     @Test
      public void testValidate() {
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), "data/input.txt");
-        ExternalSortingProperties.FILENAME.isValid();
-        ExternalSortingProperties.NR_WRITER_THREADS.isValid();
-        ExternalSortingProperties.MAX_TEMP_FILE_SIZE.isValid();
+        ExternalSortingApplication app = new ExternalSortingApplication();
+        app.validate();
     }
 
     @Test(expected = ExternalSortingException.class)
     public void testValidateWrongInput() {
         System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), "data/notFound.txt");
-        ExternalSortingProperties.FILENAME.isValid();
+        ExternalSortingApplication app = new ExternalSortingApplication();
+        app.validate();
     }
 
     @Test(expected = ExternalSortingException.class)
     public void testValidateZeroThreads() {
+        System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), "data/input.txt");
         System.setProperty(ExternalSortingProperties.NR_WRITER_THREADS.getLabel(), "0");
-        ExternalSortingProperties.NR_WRITER_THREADS.isValid();
+        ExternalSortingApplication app = new ExternalSortingApplication();
+        app.validate();
     }
 
     @Test(expected = ExternalSortingException.class)
     public void testValidateSmallTempFileSize() {
+        System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), "data/input.txt");
         System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "1024");
-        ExternalSortingProperties.MAX_TEMP_FILE_SIZE.isValid();
+        ExternalSortingApplication app = new ExternalSortingApplication();
+        app.validate();
     }
 
 }
