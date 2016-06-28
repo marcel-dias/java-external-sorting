@@ -26,35 +26,36 @@ Because we can keep a filenames list and sort it to make the merge phase easier 
 I chose because it is a divide and conquer algorithm. It is not complex to implement and we can take advantage implementing in a recursive way. It can also be implemented using parallel processing. MergeSort has a good average performance.
 
 #### Why K-way Merging?
-The split phase generates temporary files according to the line content and more specialized ones when the precedent get full.
-**Example:**  ```a.txt``` reach 10 Mb then the split phase start creating ```ab.txt, ac.txt ... az.txt```
-Since the ```a.txt``` has lines starting with ```ac, ad, az``` characters it needs to be merged with the others ```a*.txt``` files.
+The split phase generates temporary files according to the line content and more specialized ones when the precedent get full. **Example:**  ```a.txt``` reach 10 Mb then the split phase start creating ```ab.txt, ac.txt ... az.txt``` Since the ```a.txt``` has lines starting with ```ac, ad, az``` characters it needs to be merged with the others ```a*.txt``` files.
 I chose the K-way merge with an [PriorityQueue](https://github.com/marceldiass/java-external-sorting/blob/master/src/main/java/com/marceldias/externalsorting/SortedList.java) implementation to handle the merge of these arbitrary number k of sorted input lists. With that approach is easy to get the head among a huge number of lines.
-
+  
 ## Execution Flow
 
 ![External Sorting Execution Flow][image]
 
 [image]: https://raw.githubusercontent.com/marceldiass/java-external-sorting/master/external-sorting.png
 
-## Building
-* Java JDK 8
-* Maven 3
-
 ## Docker image
+To sort a file  
 
 ```bash
 ❯ docker run -ti --rm -v `pwd`:"/home/data" marceldiass/external-sorting
 ```
 
-You can also validate the output file
+To validate the output file
+
 ```bash
 ❯ docker run -ti --rm -v `pwd`:"/home/data" marceldiass/external-sorting validate
 ```
-
 > The docker -v parameter mounts a data volume between the host and container. To properly work needs to be a folder inside the user home folder.
 
+## Building
+
+* Java JDK 8
+* Maven 3
+
 ## Running
+
 ```bash
 ❯ ./run.sh
 Running External Sorting!
@@ -76,7 +77,6 @@ AlphabeticalOrderValidator took 57 ms.
 ```
 
 ## Results in my box
-
 The results below  was sorting a file with 807 Mb and 5000000 lines.
 My box has 4 cpu (ht) and SSD.
 
@@ -95,10 +95,12 @@ Heap Size | Thread Number | Temp File Size | Total Time
 * Development
   * File Reader
   * File Writer
-    * Add splitter logic
+     * Add splitter logic
   * File Sorter
-    * Sort in alphabetical order
+     * Sort in alphabetical order
   * File K-way Merger
   * File Merger
-  * Measure, refactoring and improvments
+  * Measure, refactoring and improvements
   * Create docs
+
+
