@@ -78,6 +78,7 @@ AlphabeticalOrderValidator took 57 ms.
 ## Results in my box
 
 The results below  was sorting a file with 807 Mb and 5000000 lines.
+My box has 4 cpu (ht) and SSD.
 
 Heap Size | Thread Number | Temp File Size | Total Time
 :-------: | :-----------: | :------------: | :---------:
