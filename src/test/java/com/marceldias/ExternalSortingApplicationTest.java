@@ -4,6 +4,7 @@ import com.marceldias.externalsorting.AlphabeticalOrderValidator;
 import com.marceldias.externalsorting.ExternalSortingProperties;
 import com.marceldias.externalsorting.FileReader;
 import com.marceldias.externalsorting.TestQueueHandler;
+import com.marceldias.externalsorting.exception.ExternalSortingException;
 import org.hamcrest.core.Is;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNull;
@@ -57,4 +58,31 @@ public class ExternalSortingApplicationTest {
         Boolean response = validator.validate(output.getAbsolutePath());
         Assert.assertThat(response, IsEqual.equalTo(Boolean.TRUE));
     }
+
+    @Test
+     public void testValidate() {
+        System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), "data/input.txt");
+        ExternalSortingProperties.FILENAME.isValid();
+        ExternalSortingProperties.NR_WRITER_THREADS.isValid();
+        ExternalSortingProperties.MAX_TEMP_FILE_SIZE.isValid();
+    }
+
+    @Test(expected = ExternalSortingException.class)
+    public void testValidateWrongInput() {
+        System.setProperty(ExternalSortingProperties.FILENAME.getLabel(), "data/notFound.txt");
+        ExternalSortingProperties.FILENAME.isValid();
+    }
+
+    @Test(expected = ExternalSortingException.class)
+    public void testValidateZeroThreads() {
+        System.setProperty(ExternalSortingProperties.NR_WRITER_THREADS.getLabel(), "0");
+        ExternalSortingProperties.NR_WRITER_THREADS.isValid();
+    }
+
+    @Test(expected = ExternalSortingException.class)
+    public void testValidateSmallTempFileSize() {
+        System.setProperty(ExternalSortingProperties.MAX_TEMP_FILE_SIZE.getLabel(), "1024");
+        ExternalSortingProperties.MAX_TEMP_FILE_SIZE.isValid();
+    }
+
 }

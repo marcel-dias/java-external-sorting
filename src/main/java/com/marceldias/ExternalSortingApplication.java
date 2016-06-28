@@ -23,8 +23,17 @@ public class ExternalSortingApplication {
         if (args.length > 0 && args[0].equals("validate")) {
             new AlphabeticalOrderValidator().validate(ExternalSortingProperties.OUTPUT.value());
         } else {
-            new ExternalSortingApplication().execute();
+
+            ExternalSortingApplication app = new ExternalSortingApplication();
+            app.validate();
+            app.execute();
         }
+    }
+
+    protected void validate() {
+        ExternalSortingProperties.FILENAME.isValid();
+        ExternalSortingProperties.NR_WRITER_THREADS.isValid();
+        ExternalSortingProperties.MAX_TEMP_FILE_SIZE.isValid();
     }
 
     protected void execute() {
