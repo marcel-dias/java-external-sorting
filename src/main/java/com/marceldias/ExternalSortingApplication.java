@@ -37,7 +37,7 @@ public class ExternalSortingApplication {
     }
 
     protected void execute() {
-        System.out.println(" Running External Sorting!");
+        System.out.println("Running External Sorting!");
         TimeMetric timeMetric = new TimeMetric("External Sorting App");
 
         FileSplitter fileSplitter = new FileSplitter();
@@ -57,7 +57,7 @@ public class ExternalSortingApplication {
         fileWriter.mergeFiles(files);
 
         timeMetric.print();
-        System.out.println(" External Sorting successfully executed!");
+        System.out.println("External Sorting successfully executed!");
     }
 
     protected List<File> getOrderedFileList(List<String> filenames, Map<String, File> tempFiles) {
